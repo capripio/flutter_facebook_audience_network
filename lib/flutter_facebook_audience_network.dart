@@ -13,10 +13,6 @@ enum InterstitialAdEvent{
 
 typedef void InterstitialAdListener(InterstitialAdEvent event);
 
-
-
-
-
 class InterstitialAd{
 
   String _placementID;
