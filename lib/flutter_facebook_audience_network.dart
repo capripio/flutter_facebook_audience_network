@@ -13,6 +13,41 @@ enum InterstitialAdEvent{
 
 typedef void InterstitialAdListener(InterstitialAdEvent event);
 
+
+
+
+
+class InterstitialAd{
+
+  String _placementID;
+  InterstitialAdListener listener;
+  FlutterFacebookAudienceNetwork ffan;
+
+  InterstitialAd(){
+    ffan = FlutterFacebookAudienceNetwork.instance;
+  }
+
+  init({@required String placementID}){
+    this._placementID = placementID;
+    ffan.channel
+      .invokeMethod('initInterstitial',<String, dynamic>{'placement_id': _placementID});
+  }
+
+  load(){
+    ffan.channel
+    .invokeMethod('interstitialLoad');
+  }
+
+  static final InterstitialAd _instance = new InterstitialAd();
+
+  static InterstitialAd get instance => _instance;
+
+  void show() {
+    ffan.channel.invokeMethod('interstitialShow');
+  }
+
+}
+
 class FlutterFacebookAudienceNetwork {
   MethodChannel channel =
       const MethodChannel('flutter_facebook_audience_network');
@@ -49,37 +84,4 @@ class FlutterFacebookAudienceNetwork {
   }
 
   
-}
-
-
-
-class InterstitialAd{
-
-  String _placementID;
-  InterstitialAdListener listener;
-  FlutterFacebookAudienceNetwork ffan;
-
-  InterstitialAd(){
-    ffan = FlutterFacebookAudienceNetwork.instance;
-  }
-
-  init({@required String placementID}){
-    this._placementID = placementID;
-    ffan.channel
-      .invokeMethod('initInterstitial',<String, dynamic>{'placement_id': _placementID});
-  }
-
-  load(){
-    ffan.channel
-    .invokeMethod('interstitialLoad');
-  }
-
-  static final InterstitialAd _instance = new InterstitialAd();
-
-  static InterstitialAd get instance => _instance;
-
-  void show() {
-    ffan.channel.invokeMethod('interstitialShow');
-  }
-
 }
