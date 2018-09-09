@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'package:flutter_facebook_audience_network/flutter_facebook_audience_network.dart';
 
 void main() => runApp(new MyApp());
@@ -13,10 +12,9 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   _MyAppState(){
-    FlutterFacebookAudienceNetwork flutterFacebookAudienceNetwork = FlutterFacebookAudienceNetwork.instance;
-    flutterFacebookAudienceNetwork.addTestDevice("DEVICE HASH");
-    InterstitialAd interstitialAd = InterstitialAd.instance;
-    interstitialAd.init(placementID: "PLACEMENT ID");
+    FlutterFacebookAudienceNetwork().addTestDevice('74a34d63-c0b9-4edc-a13d-ef9eb35955bc');
+    InterstitialAd interstitialAd = InterstitialAd();
+    interstitialAd.init(placementID: '285168965174870_285170215174745');
     interstitialAd.listener = (InterstitialAdEvent event){
       if(event == InterstitialAdEvent.loaded){
         interstitialAd.show();

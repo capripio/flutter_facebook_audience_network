@@ -76,7 +76,7 @@ class FlutterFacebookAudienceNetworkPlugin(private val registrar: Registrar, pri
 
             override fun onError(p0: Ad?, p1: AdError?) {
                 channel.invokeMethod("onInterstitialError",
-                        argumentsMap("error_code", p1?.errorCode!!, "error_message", p1?.errorMessage!!))
+                            argumentsMap("error_code", p1?.errorCode!!, "error_message", p1?.errorMessage!!))
             }
 
             override fun onAdLoaded(p0: Ad?) {
