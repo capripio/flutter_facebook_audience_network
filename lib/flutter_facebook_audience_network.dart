@@ -2,53 +2,69 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
 
-enum InterstitialAdEvent {
-  diplayed,
-  dismissed,
-  error,
-  loaded,
-  clicked,
-  impression
-}
+enum AdEvent { diplayed, dismissed, error, loaded, clicked, impression }
 
-typedef void InterstitialAdListener(InterstitialAdEvent event);
+typedef void AdListener(AdEvent event);
 
-class InterstitialAd {
+abstract class Ad {
   MethodChannel channel =
       const MethodChannel('flutter_facebook_audience_network');
-  String _placementID;
-  InterstitialAdListener listener;
+  AdListener listener;
+  final String placementID;
 
-  static const Map<String, InterstitialAdEvent> _interstitialAdEvent =
-      <String, InterstitialAdEvent>{
-    'onInterstitialDisplayed': InterstitialAdEvent.diplayed,
-    'onInterstitialAdClicked': InterstitialAdEvent.clicked,
-    'onInterstitialDismissed': InterstitialAdEvent.dismissed,
-    'onInterstitialError': InterstitialAdEvent.error,
-    'onInterstitialAdLoaded': InterstitialAdEvent.loaded,
-    'onInterstitialLoggingImpression': InterstitialAdEvent.impression,
+  static const Map<String, AdEvent> _adEvent = <String, AdEvent>{
+    'onAdDisplayed': AdEvent.diplayed,
+    'onAdClicked': AdEvent.clicked,
+    'onAdDismissed': AdEvent.dismissed,
+    'onAdError': AdEvent.error,
+    'onAdLoaded': AdEvent.loaded,
+    'onAdLoggingImpression': AdEvent.impression,
   };
 
-  InterstitialAd() {
+  int get id => hashCode;
+
+  Ad({@required this.placementID}) {
     channel.setMethodCallHandler(_handleMethod);
   }
-
   Future<dynamic> _handleMethod(MethodCall call) {
     // final Map<dynamic, dynamic> argumentsMap = call.arguments;
-    final InterstitialAdEvent _event = _interstitialAdEvent[call.method];
+    final AdEvent _event = _adEvent[call.method];
     if (_event != null) {
       listener(_event);
     }
     return new Future<Null>(null);
   }
 
-  init({@required String placementID}) {
-    _placementID = placementID;
+  void load();
+}
+
+class BannerAd extends Ad {
+  BannerAd({@required String placementID}) : super(placementID: placementID) {
     channel.invokeMethod(
-        'initInterstitial', <String, dynamic>{'placement_id': _placementID});
+        'initBanner', <String, dynamic>{
+          'placement_id': this.placementID
+          });
   }
 
-  load() {
+  @override
+  void load() {
+    channel.invokeMethod('bannerLoad', <String, dynamic>{
+      'id': this.id,
+    });
+  }
+
+  
+}
+
+class InterstitialAd extends Ad {
+  InterstitialAd({@required String placementID})
+      : super(placementID: placementID) {
+    channel.invokeMethod('initInterstitial',
+        <String, dynamic>{'placement_id': this.placementID});
+  }
+
+  @override
+  void load() {
     channel.invokeMethod('interstitialLoad');
   }
 
@@ -60,9 +76,8 @@ class InterstitialAd {
 class FlutterFacebookAudienceNetwork {
   MethodChannel _channel =
       const MethodChannel('flutter_facebook_audience_network');
-  addTestDevice(String testDeviceHash){
-    _channel.invokeMethod('addTestDevice', <String, dynamic>{
-      'device_hash': testDeviceHash
-    });
+  addTestDevice(String testDeviceHash) {
+    _channel.invokeMethod(
+        'addTestDevice', <String, dynamic>{'device_hash': testDeviceHash});
   }
 }

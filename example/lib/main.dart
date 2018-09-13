@@ -13,14 +13,21 @@ class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
   _MyAppState(){
     FlutterFacebookAudienceNetwork().addTestDevice('74a34d63-c0b9-4edc-a13d-ef9eb35955bc');
-    InterstitialAd interstitialAd = InterstitialAd();
-    interstitialAd.init(placementID: '285168965174870_285170215174745');
-    interstitialAd.listener = (InterstitialAdEvent event){
-      if(event == InterstitialAdEvent.loaded){
-        interstitialAd.show();
+    // InterstitialAd interstitialAd = InterstitialAd(placementID: '285168965174870_285170215174745');
+    // interstitialAd.listener = (AdEvent event){
+    //   if(event == AdEvent.loaded){
+    //     interstitialAd.show();
+    //   }
+    // };
+    // interstitialAd.load();
+
+    BannerAd bannerAd = BannerAd(placementID: '285168965174870_285173298507770');
+    bannerAd.listener = (AdEvent event){
+      if(event == AdEvent.error){
+        print("An error occured");
       }
     };
-    interstitialAd.load();
+    bannerAd.load();
     
   }
   @override
