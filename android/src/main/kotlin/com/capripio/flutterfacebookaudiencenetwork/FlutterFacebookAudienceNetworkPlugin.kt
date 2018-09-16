@@ -1,6 +1,7 @@
 package com.capripio.flutterfacebookaudiencenetwork
 
 import android.app.Activity
+import android.util.Log
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -54,10 +55,12 @@ class FlutterFacebookAudienceNetworkPlugin(private val registrar: Registrar, pri
             activity.addContentView(layout, ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.MATCH_PARENT
             ))
+            adView?.loadAd()
         }
     }
 
     private fun callInitBanner(placementID: String, result: Result) {
+        Log.e("capripio","Add Function call")
         if (placementID == "") {
             result.error("no_placement_id", "a null or empty Placement id provided", null)
             return
@@ -70,12 +73,14 @@ class FlutterFacebookAudienceNetworkPlugin(private val registrar: Registrar, pri
             }
 
             override fun onError(p0: Ad?, p1: AdError?) {
+                Log.e("capripio",p1?.errorMessage)
                 channel.invokeMethod("onAdError",
                         argumentsMap("error_code", p1?.errorCode!!,
                                 "error_message", p1.errorMessage!!))
             }
 
             override fun onAdLoaded(p0: Ad?) {
+                Log.e("capripio","Ad has been loaded")
                 channel.invokeMethod("onAdLoaded", argumentsMap())
             }
 
@@ -128,6 +133,7 @@ class FlutterFacebookAudienceNetworkPlugin(private val registrar: Registrar, pri
             }
 
             override fun onError(p0: Ad?, p1: AdError?) {
+                Log.e("capripio_error",p1?.errorMessage)
                 channel.invokeMethod("onAdError",
                             argumentsMap("error_code", p1?.errorCode!!,
                                     "error_message", p1.errorMessage!!))

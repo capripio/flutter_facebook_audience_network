@@ -11,20 +11,54 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  _MyAppState(){
-    FlutterFacebookAudienceNetwork().addTestDevice('74a34d63-c0b9-4edc-a13d-ef9eb35955bc');
+  _MyAppState() {
+    FlutterFacebookAudienceNetwork()
+        .addTestDevice('74a34d63-c0b9-4edc-a13d-ef9eb35955bc');
     // InterstitialAd interstitialAd = InterstitialAd(placementID: '285168965174870_285170215174745');
     // interstitialAd.listener = (AdEvent event){
-    //   if(event == AdEvent.loaded){
+    //   switch (event){
+    //     case AdEvent.error:
+    //     print("here error");
+    //     break;
+    //     case AdEvent.clicked:
+
+    //     break;
+    //     case AdEvent.diplayed:
+
+    //     break;
+    //     case AdEvent.impression:
+
+    //     break;
+    //     case AdEvent.loaded:
+    //     print("here loaded");
     //     interstitialAd.show();
+    //     break;
+    //     case AdEvent.dismissed:
+
+    //     break;
     //   }
     // };
     // interstitialAd.load();
 
-    BannerAd bannerAd = BannerAd(placementID: '285168965174870_285173298507770');
-    bannerAd.listener = (AdEvent event){
-      if(event == AdEvent.error){
-        print("An error occured");
+    BannerAd bannerAd =
+        BannerAd(placementID: '285168965174870_285173298507770');
+    bannerAd.listener = (AdEvent event) {
+      switch (event) {
+        case AdEvent.error:
+          print("here error");
+          break;
+        case AdEvent.clicked:
+          break;
+        case AdEvent.diplayed:
+          break;
+        case AdEvent.impression:
+          break;
+        case AdEvent.loaded:
+          print("here loaded");
+          
+          break;
+        case AdEvent.dismissed:
+          break;
       }
     };
     bannerAd.load();
@@ -34,14 +68,10 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     initPlatformState();
-    
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-
-    
-  }
+  Future<void> initPlatformState() async {}
 
   @override
   Widget build(BuildContext context) {
