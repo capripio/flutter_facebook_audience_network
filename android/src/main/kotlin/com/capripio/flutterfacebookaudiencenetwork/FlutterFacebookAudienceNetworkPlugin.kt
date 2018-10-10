@@ -29,13 +29,16 @@ class FlutterFacebookAudienceNetworkPlugin(private val registrar: Registrar, pri
 
 
     override fun onMethodCall(call: MethodCall, result: Result) {
+        val placementID: String = call.argument("placement_id")!!
+        val id: Int = call.argument("id")!!
+        val deviceHash: String = call.argument("device_hash")!!
         when {
-            call.method == "initInterstitial" -> this.callInitInterstitial(call.argument("placement_id") as String, result)
+            call.method == "initInterstitial" -> this.callInitInterstitial(placementID , result)
             call.method == "interstitialLoad" -> this.callInterstitialLoad(result)
             call.method == "interstitialShow" -> this.callInterstitialShow(result)
-            call.method == "initBanner" -> this.callInitBanner(call.argument("placement_id") as String, result)
-            call.method == "bannerLoad" -> this.callBannerLoad(call.argument("id") as Int, result)
-            call.method == "addTestDevice" -> this.callAddTestDevice(call.argument("device_hash") as String,result)
+            call.method == "initBanner" -> this.callInitBanner(placementID, result)
+            call.method == "bannerLoad" -> this.callBannerLoad(id, result)
+            call.method == "addTestDevice" -> this.callAddTestDevice(deviceHash,result)
             else -> result.notImplemented()
         }
     }
