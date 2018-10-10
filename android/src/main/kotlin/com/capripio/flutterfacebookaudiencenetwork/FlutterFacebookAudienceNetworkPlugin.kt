@@ -29,27 +29,24 @@ class FlutterFacebookAudienceNetworkPlugin(private val registrar: Registrar, pri
 
 
     override fun onMethodCall(call: MethodCall, result: Result) {
-        val placementID: String = call.argument("placement_id")!!
-        val id: Int = call.argument("id")!!
-        val deviceHash: String = call.argument("device_hash")!!
         when {
-            call.method == "initInterstitial" -> this.callInitInterstitial(placementID , result)
+            call.method == "initInterstitial" -> this.callInitInterstitial(call.argument("placement_id"), result)
             call.method == "interstitialLoad" -> this.callInterstitialLoad(result)
             call.method == "interstitialShow" -> this.callInterstitialShow(result)
-            call.method == "initBanner" -> this.callInitBanner(placementID, result)
-            call.method == "bannerLoad" -> this.callBannerLoad(id, result)
-            call.method == "addTestDevice" -> this.callAddTestDevice(deviceHash,result)
+            call.method == "initBanner" -> this.callInitBanner(call.argument("placement_id"), result)
+            call.method == "bannerLoad" -> this.callBannerLoad(call.argument("id"), result)
+            call.method == "addTestDevice" -> this.callAddTestDevice(call.argument("device_hash"),result)
             else -> result.notImplemented()
         }
     }
 
-    private fun callBannerLoad(id: Int ,result: Result) {
+    private fun callBannerLoad(id: Int? ,result: Result) {
         if (this.adView == null) {
             result.error("null_banner_ad", "Banner Ad Not Initialized", null)
             return
         }
         val activity: Activity = registrar.activity()
-        if(activity.findViewById<LinearLayout>(id) == null){
+        if(activity.findViewById<LinearLayout>(id!!) == null){
             val layout = LinearLayout(activity)
             layout.id = id
             layout.orientation = LinearLayout.VERTICAL //TODO: Set Dynamic
@@ -62,7 +59,7 @@ class FlutterFacebookAudienceNetworkPlugin(private val registrar: Registrar, pri
         }
     }
 
-    private fun callInitBanner(placementID: String, result: Result) {
+    private fun callInitBanner(placementID: String?, result: Result) {
         Log.e("capripio","Add Function call")
         if (placementID == "") {
             result.error("no_placement_id", "a null or empty Placement id provided", null)
@@ -94,7 +91,7 @@ class FlutterFacebookAudienceNetworkPlugin(private val registrar: Registrar, pri
         })
     }
 
-    private fun callAddTestDevice(device_hash: String, result: Result) {
+    private fun callAddTestDevice(device_hash: String?, result: Result) {
         AdSettings.addTestDevice(device_hash)
         result.success(true)
     }
@@ -115,8 +112,7 @@ class FlutterFacebookAudienceNetworkPlugin(private val registrar: Registrar, pri
         this.interstitialAd?.loadAd()
     }
 
-    private fun callInitInterstitial(placementID: String, result: Result) {
-
+    private fun callInitInterstitial(placementID: String?, result: Result) {
         if (placementID == "") {
             result.error("no_placement_id", "a null or empty Placement id provided", null)
             return
